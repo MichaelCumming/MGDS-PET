@@ -1,7 +1,7 @@
 #MGDS-PET
-Multi-platform Game Distribution System for Popular and Experiemental Technologies
+Multi-platform Game Distribution System for Popular and Experimental Technologies
 
-An ISTP and NSERC funded project involving the following institutions and enterprises:
+An ISTP and NSERC (Canada) funded project involving the following institutions and enterprises:
 * Digital Futures Initiative, Ontario College of Art and Design University, Toronto, Canada
 * Xenophile Media Inc. Toronto, Canada
 * Zuannon Projetos Visuais Ltda. São Paulo, Brazil
