@@ -1,4 +1,4 @@
-*MGDS-PET
+#MGDS-PET
 Multi-platform Game Distribution System for Popular and Experiemental Technologies
 
 An ISTP and NSERC funded project involving the following institutions and enterprises:
