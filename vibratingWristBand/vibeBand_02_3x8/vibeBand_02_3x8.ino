@@ -13,15 +13,15 @@ const int LEDs_red[4] =     {33, 35, 37, 39};
 
 const int vibes_all[8] =    {42, 43, 44, 45, 46, 47, 48, 49};
 const int vibes_top[8] =    {42, 44, 46, 48};
-const int vibes_button[8] = {43, 45, 47, 49};
+const int vibes_bottom[8] = {43, 45, 47, 49};
 
 //keep track of previous button state?
 int buttonsStates[8] =      {-1, -1, -1, -1, -1, -1, -1, -1}; //-1 init
 
 int b = -1;
 const int numElems = 8;
-const int flashDelay = 50;
-const int delayMid = 50;
+const int flashDelay = 200;
+const int delayMid = 200;
 int bState = 0;
 
 void setup() {
@@ -37,17 +37,55 @@ void setup() {
 //**************************************************
 //the main loop
 void loop() {
-  //do something based on the button pressed
+  //test01_flashAdj();
+  test02_flashAll();
+  //respondToButton(b);
+  //lightIfButton(b); 
+}
+//**************************************************
+
+//second function 2014-05-01 (put in main loop)
+void test02_flashAll() {
+  //if first button
+   int b = getFirstButtonPressed();
+   //printToSerial("button_: ", b);
+   respondToButton(b);
+ }
+
+//first function 2014-05-01 (put in main loop)
+void test01_flashAdj() {
   b = getFirstButtonPressed();
   flashAdjLED(b);
   flashAdjVibe(b);
   //printToSerial("button: ", b);
   lightLED13(b);
-  
-  //lightIfButton(b);
-  //respondToButtonPressed(getAllButtonsPressed()); 
 }
-//**************************************************
+
+//Functions called according to button pressed
+void respondToButton(int button) {
+  switch (button) {
+    case 0: //first button
+       flashOutputs(LEDs_all, 8);
+      break;
+    case 1: //second button
+       flashOutputs(LEDs_green, 4);
+      break;
+    case 2: //third button
+       flashOutputs(LEDs_red, 4);
+      break;
+    case 3: //fourth button
+       flashOutputs(vibes_all, 8);
+      break;
+    case 4: //fifth button
+       flashOutputs(vibes_top, 4);
+      break;
+    case 5: //sixth button
+       flashOutputs(vibes_bottom, 4);
+      break;
+    break;
+  } 
+}
+
 void flashAdjLED(int button) {
   int ledOffset = 32; //based on pin assignments above
   int ledPin = button + ledOffset;
@@ -57,7 +95,6 @@ void flashAdjLED(int button) {
   digitalWrite(ledPin, LOW);
 }
 
-//**************************************************
 void flashAdjVibe(int button) {
   int vibeOffset = 42; //based on pin assignments above
   int vPin = button + vibeOffset;
@@ -81,18 +118,9 @@ void lightLED13(int b) {
   }  
 }
 
-//the functions called according to each button pressed
-void respondToButtonPressed(int button) {
-  switch (button) {
-    case 1: //first button
-    
-//    flashLEDs(LEDs_all, 3);
-      break;
-    case 2:
-    break;
-  } 
-}
 
+
+//
 void lightIfButton(int bPin) {
   digitalWrite(bPin, HIGH);
   delay(flashDelay);
@@ -110,10 +138,7 @@ int getFirstButtonPressed() {
     //if button pressed
     if(digitalRead(buttons_all[i]) == HIGH) {
       //record which button was pressed
-      //buttonsStates[i] = 1; //'1' means button has been just pressed
-      //return the button number of first button pressed
-      
-      
+      //buttonsStates[i] = 1; //'1' means button has been just pressed     
       return i; 
     }
   }
@@ -129,19 +154,17 @@ int getAllButtonsPressed() {
   }
 }
 
-//send a specific array of LED pins and flash them
-void flashLEDs(const int input[], int numFlashes) {
-  // repeat ON/OFF cycles this many times
-  for(int i = 0; i < numFlashes; i++) {
+//send a specific array of pins and flashes them
+void flashOutputs(const int input[], int num) {
      //turn ON LEDs
-     for(int i = 0; i < sizeof(input); i++) {
-       digitalWrite(input[i], HIGH); 
+     for(int j = 0; j < num; j++) {
+       digitalWrite(input[j], HIGH); 
+       //printToSerial("input HIGH: ", j);
      }
      //wait
      delay(flashDelay); 
      //turn OFF LEDs
-     for(int i = 0; i < sizeof(input); i++) {
-       digitalWrite(input[i], LOW); 
+     for(int k = 0; k < num; k++) {
+       digitalWrite(input[k], LOW); 
      }
-  }
 }
