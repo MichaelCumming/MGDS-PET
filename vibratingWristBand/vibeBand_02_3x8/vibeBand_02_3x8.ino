@@ -43,16 +43,22 @@ void loop() {
   //lightIfButton(b); 
 }
 //**************************************************
+//third function 2014-05-01 (put this in the main loop)
+void test03_simpleSequences() {
 
-//second function 2014-05-01 (put in main loop)
+
+
+}
+
+//second function 2014-05-01 (put this in the main loop)
 void test02_flashAll() {
   //if first button
    int b = getFirstButtonPressed();
    //printToSerial("button_: ", b);
-   respondToButton(b);
+   test02_respondToButton(b);
  }
 
-//first function 2014-05-01 (put in main loop)
+//first function 2014-05-01 (put this in the main loop)
 void test01_flashAdj() {
   b = getFirstButtonPressed();
   flashAdjLED(b);
@@ -62,7 +68,7 @@ void test01_flashAdj() {
 }
 
 //Functions called according to button pressed
-void respondToButton(int button) {
+void test02_respondToButton(int button) {
   switch (button) {
     case 0: //first button
        flashOutputs(LEDs_all, 8);
@@ -82,6 +88,12 @@ void respondToButton(int button) {
     case 5: //sixth button
        flashOutputs(vibes_bottom, 4);
       break;
+    case 6:
+      flashAdjLED(button);
+      flashAdjVibe(button);
+    case 7:
+      flashAdjLED(button);
+      flashAdjVibe(button);
     break;
   } 
 }
