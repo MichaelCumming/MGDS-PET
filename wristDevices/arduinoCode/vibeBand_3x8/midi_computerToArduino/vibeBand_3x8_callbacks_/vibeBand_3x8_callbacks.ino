@@ -32,7 +32,7 @@ void setup() {
   MIDI.begin(MIDI_CHANNEL_OMNI);
   MIDI.setHandleNoteOn(HandleNoteOn); // Put only the name of the function
 
-    //Serial.begin(9600);
+  //Serial.begin(9600);
   //set up input and output pins on Arduino board
   for(int i = 0; i < numElems; i++) {
     //pinMode(buttons_all[i], INPUT);
