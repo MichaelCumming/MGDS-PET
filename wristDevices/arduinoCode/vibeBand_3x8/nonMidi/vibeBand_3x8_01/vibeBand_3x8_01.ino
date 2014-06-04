@@ -70,22 +70,22 @@ void test02_respondToButton(int button) {
   switch (button) {
     case 0: //first button
        //squareWave_ON(LEDs_all, 8);
-       rhythm_01(vibes_top, 8, 4);
+       rhythm_02(vibes_top, 4, 4, 150);
       break;
     case 1: //second button
-       squareWave_ON(LEDs_green, 4);
+       //squareWave_ON(LEDs_green, 4);
       break;
     case 2: //third button
-       squareWave_ON(LEDs_red, 4);
+       //squareWave_ON(LEDs_red, 4);
       break;
     case 3: //fourth button
-       squareWave_ON(vibes_all, 8);
+       //squareWave_ON(vibes_all, 8);
       break;
     case 4: //fifth button
-       squareWave_ON(vibes_top, 4);
+       //squareWave_ON(vibes_top, 4);
       break;
     case 5: //sixth button
-       squareWave_ON(vibes_bottom, 4);
+       //squareWave_ON(vibes_bottom, 4);
       break;
     case 6:
       flashAdjLED(button);
@@ -169,14 +169,14 @@ const int ON_duration = 200;
 const int OFF_duration = 100;
 
 //produces one square wave
-void squareWave_ON(const int input[], int inputLength) {
+void squareWave_ON(const int input[], int inputLength, int onDuration) {
      //turn ON LEDs
      for(int j = 0; j < inputLength; j++) {
        digitalWrite(input[j], HIGH); 
        //printToSerial("input HIGH: ", j);
      }
      //wait
-     delay(ON_duration);
+     delay(onDuration);
      //turn OFF LEDs
      for(int k = 0; k < inputLength; k++) {
        digitalWrite(input[k], LOW); 
@@ -185,21 +185,35 @@ void squareWave_ON(const int input[], int inputLength) {
 
 //produces a single square wave
 //OFF_duration = duration of wave at zero
-void squareWave_repeat(const int input[], int arrayLength, int numRepeats) {
+void squareWave_repeat(const int input[], int arrayLength, int numRepeats, int onDuration) {
   for (int i = 0; i < numRepeats; i++) {
-    squareWave_ON(input, arrayLength);
+    squareWave_ON(input, arrayLength, onDuration);
     delay(OFF_duration);
   }
 }
 
-//rhythms based on durations and repeats (not dynamics of waves)
-void rhythm_01(const int input[], int arrayLength, int numRepeats) {
-  for (int i = 0; i < numRepeats; i++) {
-    squareWave_ON(input, arrayLength);
-    delay(OFF_duration*1.00);
+//rhythms based on durations and repeats (not dynamics of square waves)
+void rhythm_01(const int input[], int arrayLength, int numRepeats, int onDuration) {
+  for (int i = 0; i < numRepeats-1; i++) {
+  for (int j = 0; j < numRepeats-1; j++) {
+    squareWave_ON(input, arrayLength, onDuration);
+    delay(onDuration*0.50);
   }
-  for (int i = 0; i < numRepeats; i++) {
-    squareWave_ON(input, arrayLength);
-    delay(OFF_duration*2.00);
+  for (int k = 0; k < numRepeats+1; k++) {
+    squareWave_ON(input, arrayLength, onDuration);
+    delay(onDuration*2.00);
+  }
   }
 }
+//strong beat followed by weaker ones
+void rhythm_02(const int input[], int arrayLength, int numRepeats, int onDuration) {
+  for (int i = 0; i < numRepeats; i++) {
+  squareWave_ON(input, arrayLength, onDuration*2.00);
+  delay(onDuration*0.50); 
+  for (int i = 0; i < numRepeats-1; i++) {
+      squareWave_ON(input, arrayLength, onDuration*1.00);
+      delay(onDuration*1.00);
+   }
+  }
+}
+
