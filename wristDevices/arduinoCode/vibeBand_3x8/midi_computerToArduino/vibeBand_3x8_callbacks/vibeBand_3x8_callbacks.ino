@@ -1,4 +1,12 @@
 #include <MIDI.h>
+//Workflow: 
+//1. compose music in Frescobaldi, export .mid file
+//2. import .mid file into Ableton (in midi track)
+//3. send midi stream out from Ableton into USB midi cable
+//4. read midi data in Arduino
+
+//Lilypond file location: ~/_github/lilypond/midiArduino/multiPartMidi
+//Ableton file: ~/Creative/musicCompositions/wearables/lilypond-01
 
 //pin assignments
 //const int buttons_all[8] = {
@@ -15,29 +23,30 @@ const int LEDs_green[4] = {
 const int LEDs_red[4] = {
   33, 35, 37, 39};
 
-//const int vibes_all[8] = {
-//  42, 43, 44, 45, 46, 47, 48, 49};
-//const int vibes_top[8] = {
-//  42, 44, 46, 48};
-//const int vibes_bottom[8] = {
-//  43, 45, 47, 49};
+const int vibes_all[8] = {
+  42, 43, 44, 45, 46, 47, 48, 49};
+const int vibes_top[8] = {
+  42, 44, 46, 48};
+const int vibes_bottom[8] = {
+  43, 45, 47, 49};
 
 //int b = -1;
 const int numElems = 8;
 const int flashDelay = 250;
 const int delayMid = 200;
-
+const int ledOffset = 32; //based on pin assignments above
+const int vibeOffset = 42; //based on pin assignments above
 
 void setup() {
   MIDI.begin(MIDI_CHANNEL_OMNI);
   MIDI.setHandleNoteOn(HandleNoteOn); // Put only the name of the function
 
-  //Serial.begin(9600);
+    //Serial.begin(9600);
   //set up input and output pins on Arduino board
   for(int i = 0; i < numElems; i++) {
     //pinMode(buttons_all[i], INPUT);
     pinMode(LEDs_all[i], OUTPUT);
-    //pinMode(vibes_all[i], OUTPUT);
+    pinMode(vibes_all[i], OUTPUT);
   }
 }
 
@@ -49,7 +58,7 @@ void loop() {
 //**************************************************
 
 void HandleNoteOn(byte channel, byte pitch, byte velocity) {
-  pitchToLED(pitch, velocity);
+  pitchToLED(channel, pitch, velocity);
   //  if(pitch==60) {
   //    digitalWrite(LED,HIGH);
   //    delay(250);
@@ -57,17 +66,19 @@ void HandleNoteOn(byte channel, byte pitch, byte velocity) {
   //  }
 }
 
-void pitchToLED(byte pitch, byte velocity) { 
-  int ledOffset = 32; //based on pin assignments above
-  //offset from middle C
-  int pitchOffset = pitch - 60; //60 % 60 = 0, 62 % 60 = 2, etc.   
-  int ledPin = ledOffset + pitchOffset; //62+2 = 64
-  //printToSerial("ledPin: ", ledPin);
-  //digitalWrite(ledPin, velocity);
-
-  digitalWrite(ledPin, HIGH);
-  //delay(250);
-  digitalWrite(ledPin, LOW);
+void pitchToLED(byte channel, byte pitch, byte velocity) { 
+  int pitchOffset = pitch - 60; //60 % 60 = 0, 62 % 60 = 2, etc. 
+  
+  if(channel==1) { //if intended for LEDs
+    digitalWrite(ledOffset + pitchOffset, HIGH);
+    delay(250);
+    digitalWrite(ledOffset + pitchOffset, LOW);
+  }
+  else { //channel==2, intended for vibes  
+    digitalWrite(vibeOffset + pitchOffset, HIGH);
+    delay(250);
+    digitalWrite(vibeOffset + pitchOffset, LOW);
+  }
 }
 
 void printToSerial(char* message, int n) {
@@ -285,6 +296,7 @@ void lightLED13() {
  // when the corresponding message has been received.
  }
  */
+
 
 
 
