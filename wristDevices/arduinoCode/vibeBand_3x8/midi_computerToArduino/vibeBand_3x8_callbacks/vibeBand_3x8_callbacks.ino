@@ -1,9 +1,9 @@
 #include <MIDI.h>
 //Workflow: 
-//1. compose music in Frescobaldi, export .mid file
-//2. import .mid file into Ableton (in midi track)
+//1. compose music in Frescobaldi, create a .mid file
+//2. import .mid file into Ableton (in a midi track)
 //3. send midi stream out from Ableton into USB midi cable
-//4. read midi data in Arduino
+//4. read midi data in Arduinon, using MIDI-read()
 
 //Lilypond file location: ~/_github/lilypond/midiArduino/multiPartMidi
 //Ableton file: ~/Creative/musicCompositions/wearables/lilypond-01
@@ -38,16 +38,15 @@ const int ledOffset = 32; //based on pin assignments above
 const int vibeOffset = 42; //based on pin assignments above
 
 void setup() {
-  MIDI.begin(MIDI_CHANNEL_OMNI);
-  MIDI.setHandleNoteOn(HandleNoteOn); // Put only the name of the function
-
-    //Serial.begin(9600);
+  //Serial.begin(9600);
   //set up input and output pins on Arduino board
   for(int i = 0; i < numElems; i++) {
     //pinMode(buttons_all[i], INPUT);
     pinMode(LEDs_all[i], OUTPUT);
     pinMode(vibes_all[i], OUTPUT);
-  }
+  } 
+  MIDI.begin(MIDI_CHANNEL_OMNI);
+  MIDI.setHandleNoteOn(HandleNoteOn); // Put only the name of the function
 }
 
 //**************************************************
@@ -59,11 +58,6 @@ void loop() {
 
 void HandleNoteOn(byte channel, byte pitch, byte velocity) {
   pitchToLED(channel, pitch, velocity);
-  //  if(pitch==60) {
-  //    digitalWrite(LED,HIGH);
-  //    delay(250);
-  //    digitalWrite(LED,LOW);
-  //  }
 }
 
 void pitchToLED(byte channel, byte pitch, byte velocity) { 
@@ -71,19 +65,19 @@ void pitchToLED(byte channel, byte pitch, byte velocity) {
   
   if(channel==1) { //if intended for LEDs
     digitalWrite(ledOffset + pitchOffset, HIGH);
-    delay(250);
+    delay(flashDelay);
     digitalWrite(ledOffset + pitchOffset, LOW);
   }
   else { //channel==2, intended for vibes  
     digitalWrite(vibeOffset + pitchOffset, HIGH);
-    delay(250);
+    delay(flashDelay);
     digitalWrite(vibeOffset + pitchOffset, LOW);
   }
 }
 
-void printToSerial(char* message, int n) {
+void printToSerial(char* message) {
   Serial.print(message);
-  Serial.println(n);
+  //Serial.println(n);
   delay(1);
 }
 
@@ -165,12 +159,7 @@ void lightLED13() {
  delay(flashDelay);
  digitalWrite(vPin, LOW);
  }
- 
- 
- 
- 
- 
- 
+  
  //
  void lightIfButton(int bPin) {
  digitalWrite(bPin, HIGH);
